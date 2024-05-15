@@ -1,0 +1,13 @@
+.stats-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Space between tables */
+  }
+  
+  .stats-section {
+    width: 100%; /* Ensure full width */
+  }
+  
+  .ag-theme-alpine {
+    height: 300px; /* Set a fixed height for each table */
+  }
