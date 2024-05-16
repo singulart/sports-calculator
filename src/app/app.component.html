@@ -4,7 +4,7 @@
     <div class="stats-section">
       <ag-grid-angular
         style="width: 100%; height: 150px;"
-        class="ag-theme-alpine"
+        class="ag-theme-quartz"
         [rowData]="rowDataOffensive"
         [columnDefs]="columnDefsOffensive"
         >
@@ -15,7 +15,7 @@
     <div class="stats-section">
       <ag-grid-angular
         style="width: 100%; height: 150px;"
-        class="ag-theme-alpine"
+        class="ag-theme-quartz"
         [rowData]="rowDataDefensive"
         [columnDefs]="columnDefsDefensive"
         >
@@ -24,4 +24,64 @@
   
   </div>
 
-<router-outlet />
+  <div style="text-align:center">
+    <button (click)="calculate()" [disabled]="calculateBtnPressed">Calculate</button>
+  </div>
+
+  <div class="stats-container">
+    <div *ngIf="!calculateBtnPressed && bigTablesReady">
+    <!-- Offensive Shots Made Table -->
+    <div class="stats-section">
+      <ag-grid-angular
+        style="width: 100%; height: 80px;"
+        class="ag-theme-quartz"
+        [headerHeight]="0"
+        [rowData]="resultRowDataOffensiveShotsMade"
+        [columnDefs]="resultColumnDefsOffensiveShotsMade"
+        >
+      </ag-grid-angular>
+    </div>
+    </div>
+    <div *ngIf="calculateBtnPressed">
+      <p>Preparing Offensive shots made...</p>
+    </div>
+
+    <div *ngIf="!calculateBtnPressed && bigTablesReady">
+      <!-- Defensive Shots Allowed Table -->
+      <div class="stats-section">
+        <ag-grid-angular
+          style="width: 100%; height: 80px;"
+          class="ag-theme-quartz"
+          [headerHeight]="0"
+          [rowData]="resultRowDataDefensiveShotsAllowed"
+          [columnDefs]="resultColumnDefsDefensiveShotsAllowed"
+          >
+        </ag-grid-angular>
+      </div>
+    </div>
+    <div *ngIf="calculateBtnPressed">
+      <p>Preparing Defensive shots allowed...</p>
+    </div>
+
+    <div *ngIf="!calculateBtnPressed && bigTablesReady">
+      <!-- Totals Table -->
+      <div class="stats-section">
+        <ag-grid-angular
+          style="width: 100%; height: 80px;"
+          class="ag-theme-quartz"
+          [headerHeight]="0"
+          [rowData]="resultRowDataTotals"
+          [columnDefs]="resultColumnDefsTotals"
+          >
+        </ag-grid-angular>
+      </div>
+    </div>
+    <div *ngIf="calculateBtnPressed">
+      <p>Preparing Totals ...</p>
+    </div>
+
+  </div>
+  
+
+
+  <router-outlet />
