@@ -2,7 +2,7 @@ import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef } from 'ag-grid-community';
+import { ColDef, GridApi } from 'ag-grid-community';
 
 @Component({
   selector: 'app-root',
@@ -16,10 +16,14 @@ import { ColDef } from 'ag-grid-community';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+
+  private gridApiOffensive!: GridApi
+  private gridApiDefensive!: GridApi
+
   columnDefsOffensive: ColDef[] = [
     { field: 'off', headerName: 'Offensive', minWidth: 40, maxWidth: 100 },
     {
-      field: 'avgPoints', headerName: "Avg. Points", minWidth: 40, maxWidth: 120,
+      field: 'avgPoints', headerName: "Avg. Points", minWidth: 40, maxWidth: 100,
       valueFormatter: params => params.value.toFixed(2),
       valueGetter: p => this.averagePoints(p.data.fgm, p.data.threepm)
     },
@@ -29,7 +33,7 @@ export class AppComponent {
     { field: 'threepa', headerName: '3PA', type: 'numericColumn', editable: true, maxWidth: 70, resizable: false },
     {
       field: 'fgPct', headerName: 'FG %', type: 'numericColumn', maxWidth: 90, resizable: false,
-      valueFormatter: params => params.value.toFixed(2),
+      valueFormatter: params => (params.value * 100).toFixed(2),
       valueGetter: p => this.fgPercentage(p.data.fgm, p.data.fga)
     },
     {
@@ -43,7 +47,7 @@ export class AppComponent {
   columnDefsDefensive: ColDef[] = [
     { field: 'def', headerName: 'Defensive', minWidth: 40, maxWidth: 120 },
     {
-      field: 'avgPoints', headerName: "Avg. Points", minWidth: 40, maxWidth: 120,
+      field: 'avgPoints', headerName: "Avg. Points", minWidth: 40, maxWidth: 100,
       valueFormatter: params => params.value.toFixed(2),
       valueGetter: p => this.averagePoints(p.data.fgm, p.data.threepm)
     },
@@ -53,7 +57,7 @@ export class AppComponent {
     { field: 'threepa', headerName: '3PA', type: 'numericColumn', editable: true, maxWidth: 70, resizable: false },
     {
       field: 'fgPct', headerName: 'FG %', type: 'numericColumn', maxWidth: 90, resizable: false,
-      valueFormatter: params => params.value.toFixed(2),
+      valueFormatter: params => (params.value * 100).toFixed(2),
       valueGetter: p => this.fgPercentage(p.data.fgm, p.data.fga)
     },
     {
@@ -116,13 +120,17 @@ export class AppComponent {
   calculateBtnPressed = false
   bigTablesReady = false
 
+  table1: number[][] = []
+  table2: number[][] = []
+
   calculate = () => {
     console.log('Calculate started')
     this.calculateBtnPressed = true
     this.prepareBigTables()
-      .then(result1 => {
+      .then(res => {
         this.calculateBtnPressed = false
         this.bigTablesReady = true
+        console.log(this.table2)
       })
       .catch(error => {
         this.calculateBtnPressed = false        
@@ -131,14 +139,42 @@ export class AppComponent {
   }
 
 
-  prepareBigTables(): Promise<string> {
+  prepareBigTables(): Promise<any> {
     return new Promise(resolve => {
-      setTimeout(() => {
-        resolve('Slow function complete');
-      }, 2000); // Simulates a 2-second task
+      
+      let beginNumber = 22
+      let endNumber = 62
+
+      for (let i = beginNumber; i <= endNumber; i++) {
+        this.table1[i - beginNumber] = []
+        for (let j = beginNumber; j <= endNumber; j++) {
+          this.table1[i - beginNumber][j - beginNumber] = 
+            this.binomialProbability(this.getCellValue(this.gridApiOffensive, 0, 'fga'), i, this.getCellValue(this.gridApiOffensive, 0, 'fgPct')) * 
+            this.binomialProbability(this.getCellValue(this.gridApiOffensive, 1, 'fga'), j, this.getCellValue(this.gridApiOffensive, 1, 'fgPct'))
+        }  
+      }
+      for (let i = beginNumber; i <= endNumber; i++) {
+        this.table2[i - beginNumber] = []
+        for (let j = beginNumber; j <= endNumber; j++) {
+          this.table2[i - beginNumber][j - beginNumber] = 
+            this.binomialProbability(this.getCellValue(this.gridApiDefensive, 0, 'fga'), i, this.getCellValue(this.gridApiDefensive, 0, 'fgPct')) * 
+            this.binomialProbability(this.getCellValue(this.gridApiDefensive, 1, 'fga'), j, this.getCellValue(this.gridApiDefensive, 1, 'fgPct'))
+        }  
+      }
+      resolve('Done')
     });
   }
 
+  getCellValue = (api: GridApi, rowIndex: number, colId: string) => {
+    const rowNode = api.getDisplayedRowAtIndex(rowIndex);
+    if (rowNode) {
+      const column = api.getColumn(colId);
+      if (column) {
+        return api.getCellValue({rowNode: rowNode, colKey: colId, useFormatter: false});
+      }
+    }
+    return null;    
+  }
 
   psm = (fgm: number, threepm: number) => {
     return this.averagePoints(fgm, threepm) / fgm
@@ -149,31 +185,31 @@ export class AppComponent {
   }
 
   fgPercentage = (fgm: number, fga: number) => {
-    return fga > 0 ? 100 * (fgm / fga) : 0;
+    return fga > 0 ? (fgm / fga) : 0;
   }
 
-  factorial = (n: number): number => {
-    let result = 1;
-    for (let i = 2; i <= n; i++) {
-      result *= i;
-    }
-    return result;
-  }
+  // factorial = (n: number): number => {
+  //   let result = 1;
+  //   for (let i = 2; i <= n; i++) {
+  //     result *= i;
+  //   }
+  //   return result;
+  // }
 
-  binomialCoefficient = (n: number, k: number): number => {
-    if (k > n) {
-      return 0;
-    }
-    if (k === 0 || k === n) {
-      return 1;
-    }
-    k = Math.min(k, n - k); // Take advantage of symmetry
-    let coeff = 1;
-    for (let i = 0; i < k; i++) {
-      coeff *= (n - i) / (i + 1);
-    }
-    return coeff;
-  }
+  // binomialCoefficient = (n: number, k: number): number => {
+  //   if (k > n) {
+  //     return 0;
+  //   }
+  //   if (k === 0 || k === n) {
+  //     return 1;
+  //   }
+  //   k = Math.min(k, n - k); // Take advantage of symmetry
+  //   let coeff = 1;
+  //   for (let i = 0; i < k; i++) {
+  //     coeff *= (n - i) / (i + 1);
+  //   }
+  //   return coeff;
+  // }
 
   /**
    * Calculates the probability of achieving exactly `k` successes in `n` trials, given the probability of success `p` on a single trial.
@@ -184,7 +220,26 @@ export class AppComponent {
    * @returns 
    */
   binomialProbability = (n: number, k: number, p: number): number => {
-    const binCoeff = this.binomialCoefficient(n, k);
-    return binCoeff * Math.pow(p, k) * Math.pow(1 - p, n - k);
+    if (k < 0 || k > n) {
+      return 0;
+    }
+
+    let pmf = new Array(k + 1).fill(0);
+    pmf[0] = Math.pow(1 - p, n);
+
+    for (let i = 1; i <= k; i++) {
+        pmf[i] = pmf[i - 1] * (n - i + 1) * p / (i * (1 - p));
+    }
+
+    return pmf[k];
+  }
+
+  onGridReadyOffensive(params: { api: GridApi<any>; }) {
+    console.log('onGridReadyOffensive')
+    this.gridApiOffensive = params.api;
+  }
+  onGridReadyDefensive(params: { api: GridApi<any>; }) {
+    console.log('onGridReadyDefensive')
+    this.gridApiDefensive = params.api;
   }
 }

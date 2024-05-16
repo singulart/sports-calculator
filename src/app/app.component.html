@@ -7,6 +7,7 @@
         class="ag-theme-quartz"
         [rowData]="rowDataOffensive"
         [columnDefs]="columnDefsOffensive"
+        (gridReady)="onGridReadyOffensive($event)"
         >
       </ag-grid-angular>
     </div>
@@ -18,6 +19,7 @@
         class="ag-theme-quartz"
         [rowData]="rowDataDefensive"
         [columnDefs]="columnDefsDefensive"
+        (gridReady)="onGridReadyDefensive($event)"
         >
       </ag-grid-angular>
     </div>
