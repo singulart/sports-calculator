@@ -81,8 +81,10 @@ export class AppComponent {
 
    resultColumnDefsOffensiveShotsMade: ColDef[] = [
     { field: 'off', minWidth: 100, maxWidth: 180, resizable: false },
-    { field: 'value', maxWidth: 100, resizable: false },
-    { field: 'pct', maxWidth: 100, resizable: false },
+    { field: 'value', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(3) },
+    { field: 'pct', maxWidth: 100, resizable: false,      
+      valueFormatter: params => (params.value * 100).toFixed(2),
+    },
   ];
 
   resultRowDataOffensiveShotsMade = [
@@ -93,8 +95,10 @@ export class AppComponent {
 
   resultColumnDefsDefensiveShotsAllowed: ColDef[] = [
     { field: 'def', minWidth: 100, maxWidth: 180, resizable: false },
-    { field: 'value', maxWidth: 100, resizable: false },
-    { field: 'pct', maxWidth: 100, resizable: false },
+    { field: 'value', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(3) },
+    { field: 'pct', maxWidth: 100, resizable: false,
+      valueFormatter: params => (params.value * 100).toFixed(2) 
+    }
   ];
 
   resultRowDataDefensiveShotsAllowed = [
@@ -104,13 +108,12 @@ export class AppComponent {
   ];
 
   resultColumnDefsTotals: ColDef[] = [
-    { field: 'tot', minWidth: 100, maxWidth: 180, resizable: false },
-    { field: 'value', maxWidth: 100, resizable: false },
-    { field: 'pct', maxWidth: 100, resizable: false },
+    { field: 'tot', headerName: 'Total Points', minWidth: 100, maxWidth: 180, resizable: false },
+    { field: 'value', headerName: 'OFF', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'pct', headerName: 'DEF', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
   ];
 
   resultRowDataTotals = [
-    { tot: 'Total Points', value: "OFF", pct: "DEF" },
     { tot: 'Team 1', value: 73.34, pct: 29.67 },
     { tot: 'Team 2', value: 26.62, pct: 70.29 }
   ];
@@ -136,84 +139,105 @@ export class AppComponent {
     console.log('Calculate started')
     this.calculateBtnPressed = true
     this.prepareBigTables()
-      .then(res => {
-        this.calculateBtnPressed = false
-        this.bigTablesReady = true
-        //console.log(this.table2)
-      })
-      .catch(error => {
-        this.calculateBtnPressed = false        
-        console.error('An error occurred:', error);
-      });    
-  }
+    this.calculateBtnPressed = false
+    this.bigTablesReady = true
+    //console.log(this.table2)
+}
 
 
-  prepareBigTables(): Promise<any> {
-    return new Promise(resolve => {
+  prepareBigTables() {
       
-      let beginNumber = 22
-      let endNumber = 62
+      const from = 22
+      const to = 62
 
-      for (let i = beginNumber; i <= endNumber; i++) {
-        this.offensiveTable[i - beginNumber] = []
-        for (let j = beginNumber; j <= endNumber; j++) {
-          this.offensiveTable[i - beginNumber][j - beginNumber] = 
-            this.binomialProbability(this.getCellValue(this.gridApiOffensive, 0, 'fga'), i, this.getCellValue(this.gridApiOffensive, 0, 'fgPct')) * 
-            this.binomialProbability(this.getCellValue(this.gridApiOffensive, 1, 'fga'), j, this.getCellValue(this.gridApiOffensive, 1, 'fgPct'))
-        }  
-      }
-      for (let i = beginNumber; i <= endNumber; i++) {
-        this.defensiveTable[i - beginNumber] = []
-        for (let j = beginNumber; j <= endNumber; j++) {
-          this.defensiveTable[i - beginNumber][j - beginNumber] = 
-            this.binomialProbability(this.getCellValue(this.gridApiDefensive, 0, 'fga'), i, this.getCellValue(this.gridApiDefensive, 0, 'fgPct')) * 
-            this.binomialProbability(this.getCellValue(this.gridApiDefensive, 1, 'fga'), j, this.getCellValue(this.gridApiDefensive, 1, 'fgPct'))
+      for (let i = from; i <= to; i++) {
+        
+        this.offensiveTable[i-from] = []
+        this.offensiveHome[i-from] = []
+        this.offensiveAway[i-from] = []
+        this.offensiveTotal[i-from] = []
+        this.offensiveSpread[i-from] = []
+
+        this.defensiveTable[i-from] = []
+        this.defensiveHome[i-from] = []
+        this.defensiveAway[i-from] = []
+        this.defensiveTotal[i-from] = []
+        this.defensiveSpread[i-from] = []
+
+        for (let j = from; j <= to; j++) {
+
+          this.offensiveTable[i-from][j-from] = 
+            this.binomialProbability(this.getCellValue(this.gridApiOffensive, 1, 'fga'), i, this.getCellValue(this.gridApiOffensive, 1, 'fgPct')) * 
+            this.binomialProbability(this.getCellValue(this.gridApiOffensive, 0, 'fga'), j, this.getCellValue(this.gridApiOffensive, 0, 'fgPct'))
+          this.offensiveHome[i-from][j-from] = this.getCellValue(this.gridApiOffensive, 1, 'psm') * i + this.getCellValue(this.gridApiOffensive, 1, 'ftm')
+          this.offensiveAway[i-from][j-from] = this.getCellValue(this.gridApiOffensive, 0, 'psm') * j + this.getCellValue(this.gridApiOffensive, 0, 'ftm')
+          this.offensiveTotal[i-from][j-from]  = this.offensiveHome[i-from][j-from] + this.offensiveAway[i-from][j-from]
+          this.offensiveSpread[i-from][j-from] = this.offensiveHome[i-from][j-from] - this.offensiveAway[i-from][j-from]
+
+          this.defensiveTable[i-from][j-from] = 
+            this.binomialProbability(this.getCellValue(this.gridApiDefensive, 1, 'fga'), i, this.getCellValue(this.gridApiDefensive, 1, 'fgPct')) * 
+            this.binomialProbability(this.getCellValue(this.gridApiDefensive, 0, 'fga'), j, this.getCellValue(this.gridApiDefensive, 0, 'fgPct'))
+          this.defensiveHome[i-from][j-from] = this.getCellValue(this.gridApiDefensive, 1, 'psm') * j + this.getCellValue(this.gridApiOffensive, 1, 'ftm')
+          this.defensiveAway[i-from][j-from] = this.getCellValue(this.gridApiDefensive, 0, 'psm') * i + this.getCellValue(this.gridApiDefensive, 0, 'ftm')
+          this.defensiveTotal[i-from][j-from]  = this.defensiveHome[i-from][j-from] + this.defensiveAway[i-from][j-from]
+          this.defensiveSpread[i-from][j-from] = this.defensiveHome[i-from][j-from] - this.defensiveAway[i-from][j-from]
         }  
       }
 
+      let sumOff = 0
+      let sumDef = 0
+      let sumOffBottom = 0
+      let sumOffDiagonal = 0
+      let sumDefBottom = 0
+      let sumDefDiagonal = 0
 
-      for (let i = beginNumber; i <= endNumber; i++) {
-        this.offensiveHome[i - beginNumber] = []
-        for (let j = beginNumber; j <= endNumber; j++) {
-          this.offensiveHome[i - beginNumber][j - beginNumber] = 
-            this.getCellValue(this.gridApiOffensive, 0, 'psm') * i + this.getCellValue(this.gridApiOffensive, 0, 'ftm')
-        }  
+      for (let i = 0; i <= to - from; i++) {
+        for (let j = 0; j <= to - from; j++) {
+          sumOff += this.offensiveTable[i][j]
+          sumDef += this.defensiveTable[i][j]
+          if(i > j) {
+            sumOffBottom += this.offensiveTable[i][j]
+            sumDefBottom += this.defensiveTable[i][j]
+          }
+          if(i === j) {
+            sumOffDiagonal += this.offensiveTable[i][j]
+            sumDefDiagonal += this.defensiveTable[i][j]
+          }
+        }
       }
-      for (let i = beginNumber; i <= endNumber; i++) {
-        this.defensiveHome[i - beginNumber] = []
-        for (let j = beginNumber; j <= endNumber; j++) {
-          this.defensiveHome[i - beginNumber][j - beginNumber] = 
-            this.getCellValue(this.gridApiDefensive, 0, 'psm') * j + this.getCellValue(this.gridApiOffensive, 0, 'ftm')
-        }  
+
+      this.resultRowDataOffensiveShotsMade = 
+      [  
+        { off: 'Offensive Shots Made', value: sumOffDiagonal, pct: sumOff },
+        { off: 'Team 1', value: sumOff - sumOffBottom - sumOffDiagonal, pct: (sumOff - sumOffBottom - sumOffDiagonal) / (sumOff - sumOffDiagonal) },
+        { off: 'Team 2', value: sumOffBottom, pct: sumOffBottom / (sumOff - sumOffDiagonal) } 
+      ]
+
+      this.resultRowDataDefensiveShotsAllowed = 
+      [  
+        { def: 'Defensive Shots Allowed', value: sumDefDiagonal, pct: sumDef },
+        { def: 'Team 1', value: sumDefBottom, pct: sumDefBottom / (sumDef - sumDefDiagonal) },
+        { def: 'Team 2', value: sumDef - sumDefBottom - sumDefDiagonal, pct: (sumDef-sumDefBottom-sumDefDiagonal)/(sumDef-sumDefDiagonal) } 
+      ]
+
+      let a4 = this.sumIfGreaterThan(this.offensiveSpread, 0, this.offensiveTable, from, to)
+      let c4 = this.sumIfGreaterThan(this.defensiveSpread, 0, this.defensiveTable, from, to)
+      this.resultRowDataTotals = [
+        { tot: 'Team 1', value: a4, pct:  c4},
+        { tot: 'Team 2', value: sumOff - a4, pct: sumOff - c4 }
+      ];
+    }
+
+  sumIfGreaterThan = (range: number[][], gt: number, values: number[][], from: number, to: number): number => {
+    let sum = 0
+    for (let i = 0; i < to - from; i++) {
+      for (let j = 0; j < to - from; j++) {
+        if(range[i][j] > gt) {
+          sum += values[i][j]
+        }
       }
-      for (let i = beginNumber; i <= endNumber; i++) {
-        this.offensiveAway[i - beginNumber] = []
-        for (let j = beginNumber; j <= endNumber; j++) {
-          this.offensiveAway[i - beginNumber][j - beginNumber] = 
-            this.getCellValue(this.gridApiOffensive, 1, 'psm') * j + this.getCellValue(this.gridApiOffensive, 1, 'ftm')
-        }  
-      }
-      for (let i = beginNumber; i <= endNumber; i++) {
-        this.defensiveAway[i - beginNumber] = []
-        for (let j = beginNumber; j <= endNumber; j++) {
-          this.defensiveAway[i - beginNumber][j - beginNumber] = 
-            this.getCellValue(this.gridApiDefensive, 1, 'psm') * i + this.getCellValue(this.gridApiDefensive, 1, 'ftm')
-        }  
-      }
-      for (let i = beginNumber; i <= endNumber; i++) {
-        this.offensiveTotal[i - beginNumber] = []
-        this.offensiveSpread[i - beginNumber] = []
-        this.defensiveTotal[i - beginNumber] = []
-        this.defensiveSpread[i - beginNumber] = []
-        for (let j = beginNumber; j <= endNumber; j++) {
-          this.offensiveTotal[i - beginNumber][j - beginNumber]  = this.offensiveHome[i - beginNumber][j - beginNumber] + this.offensiveAway[i - beginNumber][j - beginNumber]
-          this.offensiveSpread[i - beginNumber][j - beginNumber] = this.offensiveHome[i - beginNumber][j - beginNumber] - this.offensiveAway[i - beginNumber][j - beginNumber]
-          this.defensiveTotal[i - beginNumber][j - beginNumber]  = this.defensiveHome[i - beginNumber][j - beginNumber] + this.defensiveAway[i - beginNumber][j - beginNumber]
-          this.defensiveSpread[i - beginNumber][j - beginNumber] = this.defensiveHome[i - beginNumber][j - beginNumber] - this.defensiveAway[i - beginNumber][j - beginNumber]
-        }  
-      }
-      resolve('Done')
-    });
+    }
+    return sum
   }
 
   getCellValue = (api: GridApi, rowIndex: number, colId: string) => {
@@ -293,4 +317,21 @@ export class AppComponent {
     console.log('onGridReadyDefensive')
     this.gridApiDefensive = params.api;
   }
+
+  onGridReadyResultOffensiveShotsMade(params: { api: GridApi<any>; }) {
+    console.log('onGridReadyResultOffensiveShotsMade')
+    params.api!.setGridOption("rowData", this.resultRowDataOffensiveShotsMade)
+  }
+
+  onGridReadyResultDefensiveShotsAllowed(params: { api: GridApi<any>; }) {
+    console.log('onGridReadyResultDefensiveShotsAllowed')
+    params.api!.setGridOption("rowData", this.resultRowDataDefensiveShotsAllowed)
+  }
+
+  onGridReadyResultTotalPoints(params: { api: GridApi<any>; }) {
+    console.log('onGridReadyResultTotalPoints')
+    params.api!.setGridOption("rowData", this.resultRowDataTotals)
+  }
+
+
 }
