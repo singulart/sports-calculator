@@ -5,6 +5,7 @@
       <ag-grid-angular
         style="width: 100%; height: 100px;"
         class="ag-theme-quartz"
+        [gridOptions]="gridOptions"
         [rowData]="rowDataOffensive"
         [columnDefs]="columnDefsOffensive"
         (gridReady)="onGridReadyOffensive($event)"
@@ -17,6 +18,7 @@
       <ag-grid-angular
         style="width: 100%; height: 100px;"
         class="ag-theme-quartz"
+        [gridOptions]="gridOptions"
         [rowData]="rowDataDefensive"
         [columnDefs]="columnDefsDefensive"
         (gridReady)="onGridReadyDefensive($event)"
@@ -37,6 +39,7 @@
       <ag-grid-angular
         style="width: 100%; height: 80px;"
         class="ag-theme-quartz"
+        [gridOptions]="gridOptions"
         [headerHeight]="0"
         [columnDefs]="resultColumnDefsOffensiveShotsMade"
         (gridReady)="onGridReadyResultOffensiveShotsMade($event)"
@@ -54,6 +57,7 @@
         <ag-grid-angular
           style="width: 100%; height: 80px;"
           class="ag-theme-quartz"
+          [gridOptions]="gridOptions"
           [headerHeight]="0"
           [columnDefs]="resultColumnDefsDefensiveShotsAllowed"
           (gridReady)="onGridReadyResultDefensiveShotsAllowed($event)"
@@ -71,6 +75,7 @@
         <ag-grid-angular
           style="width: 100%; height: 80px;"
           class="ag-theme-quartz"
+          [gridOptions]="gridOptions"
           [columnDefs]="resultColumnDefsTotals"
           (gridReady)="onGridReadyResultTotalPoints($event)"
           >
@@ -87,6 +92,7 @@
         <ag-grid-angular
           style="width: 100%; height: 580px;"
           class="ag-theme-quartz"
+          [gridOptions]="gridOptions"
           [columnDefs]="resultColumnDefsOffensiveOverSpreadHome"
           (gridReady)="onGridReadyResultOverUnderSpreadHome($event)"
           >
@@ -103,6 +109,7 @@
         <ag-grid-angular
           style="width: 100%; height: 580px;"
           class="ag-theme-quartz"
+          [gridOptions]="gridOptions"
           [columnDefs]="resultColumnDefsOffensiveOverSpreadAway"
           (gridReady)="onGridReadyResultOverUnderSpreadAway($event)"
           >
@@ -119,6 +126,7 @@
         <ag-grid-angular
           style="width: 100%; height: 1100px;"
           class="ag-theme-quartz"
+          [gridOptions]="gridOptions"
           [columnDefs]="resultColumnDefsOffensiveOverTotal"
           (gridReady)="onGridReadyResultOverUnderTotals($event)"
           >
@@ -135,6 +143,7 @@
         <ag-grid-angular
           style="width: 100%; height: 1100px;"
           class="ag-theme-quartz"
+          [gridOptions]="gridOptions"
           [columnDefs]="resultColumnDefsOffensiveOverHome"
           (gridReady)="onGridReadyResultOverUnderHome($event)"
           >
@@ -151,6 +160,7 @@
         <ag-grid-angular
           style="width: 100%; height: 1100px;"
           class="ag-theme-quartz"
+          [gridOptions]="gridOptions"
           [columnDefs]="resultColumnDefsOffensiveOverAway"
           (gridReady)="onGridReadyResultOverUnderAway($event)"
           >

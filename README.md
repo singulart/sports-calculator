@@ -2,6 +2,12 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.3.7.
 
+## Deploy to Git Pages
+
+`ng add angular-cli-ghpages`
+
+`ng deploy --base-href=/sports-calculator/`
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
