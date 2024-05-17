@@ -65,7 +65,7 @@ export class AppComponent {
       valueFormatter: params => params.value.toFixed(2),
       valueGetter: p => this.psm(p.data.fgm, p.data.threepm)
     }
-  ];
+  ]
 
   rowDataOffensive = [
     { off: 'Team 1', fgm: 47, fga: 92.7, threepm: 13.2, threepa: 35.3, ftm: 16.1 },
@@ -75,7 +75,7 @@ export class AppComponent {
   rowDataDefensive = [
     { def: 'Team 1', fgm: 44.5, fga: 89.8, threepm: 10.7, threepa: 29.3 },
     { def: 'Team 2', fgm: 40.3, fga: 85.7, threepm: 12.5, threepa: 34.3 }
-  ];
+  ]
 
   //////////////////////// RESULT TABLES ///////////////////////////////////
 
@@ -86,13 +86,13 @@ export class AppComponent {
       field: 'pct', maxWidth: 100, resizable: false,
       valueFormatter: params => (params.value * 100).toFixed(2),
     },
-  ];
+  ]
 
   resultRowDataOffensiveShotsMade = [
     { off: 'Offensive Shots Made', value: 0.042, pct: 99.96 },
     { off: 'Team 1', value: 0.780, pct: 81.37 },
     { off: 'Team 2', value: 0.178, pct: 18.63 }
-  ];
+  ]
 
   resultColumnDefsDefensiveShotsAllowed: ColDef[] = [
     { field: 'def', minWidth: 100, maxWidth: 180, resizable: false },
@@ -101,29 +101,91 @@ export class AppComponent {
       field: 'pct', maxWidth: 100, resizable: false,
       valueFormatter: params => (params.value * 100).toFixed(2)
     }
-  ];
+  ]
 
   resultRowDataDefensiveShotsAllowed = [
     { def: 'Defensive Shots Allowed', value: 0.042, pct: 99.96 },
     { def: 'Team 1', value: 0.780, pct: 81.37 },
     { def: 'Team 2', value: 0.178, pct: 18.63 }
-  ];
+  ]
 
   resultColumnDefsTotals: ColDef[] = [
     { field: 'tot', headerName: 'Total Points', minWidth: 100, maxWidth: 180, resizable: false },
     { field: 'value', headerName: 'OFF', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
     { field: 'pct', headerName: 'DEF', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
-  ];
+  ]
 
   resultRowDataTotals = [
     { tot: 'Team 1', value: 73.34, pct: 29.67 },
     { tot: 'Team 2', value: 26.62, pct: 70.29 }
-  ];
+  ]
 
+
+  // resultOverUnderTemplate: ColDef[] = [
+  //   { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
+  //   { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
+  //   { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+  //   { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+  //   { field: 'lastCol', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+  // ]
+  resultColumnDefsOffensiveOverTotal: ColDef[] = [
+    { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+    { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+    { field: 'lastCol', headerName: 'TOTAL', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+  ]
+  resultColumnDefsOffensiveOverHome: ColDef[] = [
+    { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+    { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+    { field: 'lastCol', headerName: 'HOME', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+  ]
+  resultColumnDefsOffensiveOverAway: ColDef[] = [
+    { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+    { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+    { field: 'lastCol', headerName: 'AWAY', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+  ]
+  resultColumnDefsOffensiveOverSpreadAway: ColDef[] = [
+    { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+    { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+    { field: 'lastCol', headerName: 'SPR.AWAY', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+  ]
+  resultColumnDefsOffensiveOverSpreadHome : ColDef[] = [
+    { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+    { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
+    { field: 'lastCol', headerName: 'SPR. HOME', maxWidth: 120, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+  ]
+
+  resultRowDataOverUnderTemplate = [
+    { offOver: 0.0, defOver: 0.0, offUnder: 0.0, defUnder: 0.0, lastCol: 0.0 }
+  ]
+  resultRowDataOverUnderTotal = [
+    { offOver: 0.0, defOver: 0.0, offUnder: 0.0, defUnder: 0.0, lastCol: 0.0 }
+  ]
+  resultRowDataOverUnderHome = [
+    { offOver: 0.0, defOver: 0.0, offUnder: 0.0, defUnder: 0.0, lastCol: 0.0 }
+  ]
+  resultRowDataOverUnderAway = [
+    { offOver: 0.0, defOver: 0.0, offUnder: 0.0, defUnder: 0.0, lastCol: 0.0 }
+  ]
+  resultRowDataOverUnderSpreadAway = [
+    { offOver: 0.0, defOver: 0.0, offUnder: 0.0, defUnder: 0.0, lastCol: 0.0 }
+  ]
+  resultRowDataOverUnderSpreadHome = [
+    { offOver: 0.0, defOver: 0.0, offUnder: 0.0, defUnder: 0.0, lastCol: 0.0 }
+  ]
   //////////////////////// END OF RESULT TABLES ///////////////////////////////////
 
   calculateBtnPressed = false
-  bigTablesReady = false
+  dataTablesReady = false
 
   offensiveTable: number[][] = []
   offensiveHome: number[][] = []
@@ -136,16 +198,16 @@ export class AppComponent {
   defensiveAway: number[][] = []
   defensiveTotal: number[][] = []
   defensiveSpread: number[][] = []
+  
 
   calculate = () => {
     this.calculateBtnPressed = true
-    this.prepareBigTables()
+    this.prepareDataTables()
     this.calculateBtnPressed = false
-    this.bigTablesReady = true
+    this.dataTablesReady = true
   }
 
-
-  prepareBigTables() {
+  prepareDataTables() {
 
     const from = 22
     const to = 62
@@ -226,6 +288,87 @@ export class AppComponent {
       { tot: 'Team 1', value: a4, pct: c4 },
       { tot: 'Team 2', value: sumOff - a4, pct: sumOff - c4 }
     ];
+
+
+    //////////////////////// START OF OVER_UNDER CALCULATIONS ///////////////////////////////////
+
+    let max = 240.5
+    let min = 200.5
+    let ind = 0
+    for (let t=max; t>=min; t-=1) {
+      let oOver = this.sumIfGreaterThan(this.offensiveTotal, t, this.offensiveTable, from, to)
+      let dOver = this.sumIfGreaterThan(this.defensiveTotal, t, this.defensiveTable, from, to) 
+      this.resultRowDataOverUnderTotal[ind] = {
+        offOver: oOver,
+        offUnder: 1 - oOver,
+        defOver: dOver,
+        defUnder: 1 - dOver,
+        lastCol: t
+      }
+      ind++    
+    }
+
+    max = 133.5
+    min = 93.5
+    ind = 0
+    for (let t = max; t >= min; t-=1) {
+      let oOver = this.sumIfGreaterThan(this.offensiveHome, t, this.offensiveTable, from, to)
+      let dOver = this.sumIfGreaterThan(this.defensiveHome , t, this.defensiveTable, from, to)
+      this.resultRowDataOverUnderHome[ind] = {
+        offOver: oOver,
+        offUnder: 1 - oOver,
+        defOver: dOver,
+        defUnder: 1 - dOver,
+        lastCol: t
+      }
+      ind++    
+    }
+
+    max = 133.5
+    min = 93.5
+    ind = 0
+    for (let t = max; t >= min; t-=1) {
+      let oOver = this.sumIfGreaterThan(this.offensiveAway, t, this.offensiveTable, from, to)
+      let dOver = this.sumIfGreaterThan(this.offensiveAway, t, this.defensiveTable, from, to)
+      this.resultRowDataOverUnderAway[ind] = {
+        offOver: oOver,
+        offUnder: 1 - oOver,
+        defOver: dOver,
+        defUnder: 1 - dOver,
+        lastCol: t
+      }
+      ind++    
+    }
+
+
+    min = .5
+    max = 20.5
+    ind = 0
+    for (let t = min; t <= max; t+=1) {
+      let oOver = this.sumIfLessThan(this.offensiveSpread, t === .5 ? t : -t /* TODO this may be a bug in excel. */, this.offensiveTable, from, to)
+      let dOver = this.sumIfLessThan(this.defensiveSpread, t === .5 ? t : -t /* TODO this may be a bug in excel. */, this.defensiveTable, from, to)
+      this.resultRowDataOverUnderSpreadAway[ind] = {
+        offOver: oOver,
+        offUnder: 1 - oOver,
+        defOver: dOver,
+        defUnder: 1 - dOver,
+        lastCol: t
+      }
+
+      oOver = this.sumIfGreaterThan(this.offensiveSpread, t, this.offensiveTable, from, to)
+      dOver = this.sumIfGreaterThan(this.defensiveSpread, t, this.defensiveTable, from, to)
+      this.resultRowDataOverUnderSpreadHome[ind] = {
+        offOver: oOver,
+        offUnder: 1 - oOver,
+        defOver: dOver,
+        defUnder: 1 - dOver,
+        lastCol: t
+      }
+
+      ind++    
+    }
+
+        //////////////////////// END OF OVER_UNDER CALCULATIONS ///////////////////////////////////
   }
 
   sumIfGreaterThan = (range: number[][], gt: number, values: number[][], from: number, to: number): number => {
@@ -233,6 +376,18 @@ export class AppComponent {
     for (let i = 0; i < to - from; i++) {
       for (let j = 0; j < to - from; j++) {
         if (range[i][j] > gt) {
+          sum += values[i][j]
+        }
+      }
+    }
+    return sum
+  }
+
+  sumIfLessThan = (range: number[][], gt: number, values: number[][], from: number, to: number): number => {
+    let sum = 0
+    for (let i = 0; i < to - from; i++) {
+      for (let j = 0; j < to - from; j++) {
+        if (range[i][j] < gt) {
           sum += values[i][j]
         }
       }
@@ -333,5 +488,28 @@ export class AppComponent {
     params.api!.setGridOption("rowData", this.resultRowDataTotals)
   }
 
+  onGridReadyResultOverUnderSpreadHome(params: { api: GridApi<any>; }) {
+    console.log('onGridReadyResultOverSpreadHome')
+    params.api!.setGridOption("rowData", this.resultRowDataOverUnderSpreadHome)
+  }
 
+  onGridReadyResultOverUnderSpreadAway(params: { api: GridApi<any>; }) {
+    console.log('onGridReadyResultOverSpreadAway')
+    params.api!.setGridOption("rowData", this.resultRowDataOverUnderSpreadAway)
+  }
+
+  onGridReadyResultOverUnderTotals(params: { api: GridApi<any>; }) {
+    console.log('onGridReadyResultOverUnderTotals')
+    params.api!.setGridOption("rowData", this.resultRowDataOverUnderTotal)
+  }
+
+  onGridReadyResultOverUnderHome(params: { api: GridApi<any>; }) {
+    console.log('onGridReadyResultOverUnderHome')
+    params.api!.setGridOption("rowData", this.resultRowDataOverUnderHome)
+  }
+
+  onGridReadyResultOverUnderAway(params: { api: GridApi<any>; }) {
+    console.log('onGridReadyResultOverUnderAway')
+    params.api!.setGridOption("rowData", this.resultRowDataOverUnderAway)
+  }
 }
