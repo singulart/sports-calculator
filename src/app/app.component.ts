@@ -2,7 +2,7 @@ import { NgIf } from '@angular/common';
 import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { AgGridModule } from 'ag-grid-angular';
-import { ColDef, GridApi } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions, ValueFormatterParams } from 'ag-grid-community';
 
 @Component({
   selector: 'app-root',
@@ -20,48 +20,58 @@ export class AppComponent {
   private gridApiOffensive!: GridApi
   private gridApiDefensive!: GridApi
 
+  gridOptions: GridOptions = {
+    // Data to be displayed
+    // rowData: [] as IRow[],
+    // Configurations applied to all columns
+    defaultColDef: {
+      resizable: false, 
+      maxWidth: 100
+    } as ColDef,
+  }
+
   columnDefsOffensive: ColDef[] = [
-    { field: 'off', headerName: 'Offensive', minWidth: 40, maxWidth: 100 },
+    { field: 'off', headerName: 'Offensive', minWidth: 40 },
     {
-      field: 'avgPoints', headerName: "Avg. Points", minWidth: 40, maxWidth: 100,
+      field: 'avgPoints', headerName: "Avg. Points", minWidth: 40,
       valueFormatter: params => params.value.toFixed(2),
       valueGetter: p => this.averagePoints(p.data.fgm, p.data.threepm)
     },
-    { field: 'fgm', headerName: 'FGM', type: 'numericColumn', editable: true, maxWidth: 70, resizable: false },
-    { field: 'fga', headerName: 'FGA', type: 'numericColumn', editable: true, maxWidth: 70, resizable: false },
-    { field: 'threepm', headerName: '3PM', type: 'numericColumn', editable: true, maxWidth: 70, resizable: false },
-    { field: 'threepa', headerName: '3PA', type: 'numericColumn', editable: true, maxWidth: 70, resizable: false },
+    { field: 'fgm', headerName: 'FGM', type: 'numericColumn', editable: true, maxWidth: 70 },
+    { field: 'fga', headerName: 'FGA', type: 'numericColumn', editable: true, maxWidth: 70 },
+    { field: 'threepm', headerName: '3PM', type: 'numericColumn', editable: true, maxWidth: 70 },
+    { field: 'threepa', headerName: '3PA', type: 'numericColumn', editable: true, maxWidth: 70 },
     {
-      field: 'fgPct', headerName: 'FG %', type: 'numericColumn', maxWidth: 90, resizable: false,
-      valueFormatter: params => (params.value * 100).toFixed(2),
+      field: 'fgPct', headerName: 'FG %', type: 'numericColumn', maxWidth: 90,
+      valueFormatter: this.percent,
       valueGetter: p => this.fgPercentage(p.data.fgm, p.data.fga)
     },
     {
-      field: 'psm', headerName: 'PSM', type: 'numericColumn', maxWidth: 90, resizable: false,
+      field: 'psm', headerName: 'PSM', type: 'numericColumn', maxWidth: 90,
       valueFormatter: params => params.value.toFixed(2),
       valueGetter: p => this.psm(p.data.fgm, p.data.threepm)
     },
-    { field: 'ftm', headerName: 'Free Throws Made', type: 'numericColumn', editable: true, maxWidth: 170, resizable: false }
+    { field: 'ftm', headerName: 'Free Throws Made', type: 'numericColumn', editable: true, maxWidth: 170 }
   ];
 
   columnDefsDefensive: ColDef[] = [
     { field: 'def', headerName: 'Defensive', minWidth: 40, maxWidth: 120 },
     {
-      field: 'avgPoints', headerName: "Avg. Points", minWidth: 40, maxWidth: 100,
+      field: 'avgPoints', headerName: "Avg. Points", minWidth: 40,
       valueFormatter: params => params.value.toFixed(2),
       valueGetter: p => this.averagePoints(p.data.fgm, p.data.threepm)
     },
-    { field: 'fgm', headerName: 'FGM', type: 'numericColumn', editable: true, maxWidth: 70, resizable: false },
-    { field: 'fga', headerName: 'FGA', type: 'numericColumn', editable: true, maxWidth: 70, resizable: false },
-    { field: 'threepm', headerName: '3PM', type: 'numericColumn', editable: true, maxWidth: 70, resizable: false },
-    { field: 'threepa', headerName: '3PA', type: 'numericColumn', editable: true, maxWidth: 70, resizable: false },
+    { field: 'fgm', headerName: 'FGM', type: 'numericColumn', editable: true, maxWidth: 70 },
+    { field: 'fga', headerName: 'FGA', type: 'numericColumn', editable: true, maxWidth: 70 },
+    { field: 'threepm', headerName: '3PM', type: 'numericColumn', editable: true, maxWidth: 70 },
+    { field: 'threepa', headerName: '3PA', type: 'numericColumn', editable: true, maxWidth: 70 },
     {
-      field: 'fgPct', headerName: 'FG %', type: 'numericColumn', maxWidth: 90, resizable: false,
-      valueFormatter: params => (params.value * 100).toFixed(2),
+      field: 'fgPct', headerName: 'FG %', type: 'numericColumn', maxWidth: 90,
+      valueFormatter: this.percent,
       valueGetter: p => this.fgPercentage(p.data.fgm, p.data.fga)
     },
     {
-      field: 'psm', headerName: 'PSM', type: 'numericColumn', maxWidth: 90, resizable: false,
+      field: 'psm', headerName: 'PSM', type: 'numericColumn', maxWidth: 90,
       valueFormatter: params => params.value.toFixed(2),
       valueGetter: p => this.psm(p.data.fgm, p.data.threepm)
     }
@@ -80,11 +90,11 @@ export class AppComponent {
   //////////////////////// RESULT TABLES ///////////////////////////////////
 
   resultColumnDefsOffensiveShotsMade: ColDef[] = [
-    { field: 'off', minWidth: 100, maxWidth: 180, resizable: false },
-    { field: 'value', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(3) },
+    { field: 'off', minWidth: 100, maxWidth: 180 },
+    { field: 'value', valueFormatter: params => params.value.toFixed(3) },
     {
-      field: 'pct', maxWidth: 100, resizable: false,
-      valueFormatter: params => (params.value * 100).toFixed(2),
+      field: 'pct',
+      valueFormatter: this.percent,
     },
   ]
 
@@ -95,11 +105,11 @@ export class AppComponent {
   ]
 
   resultColumnDefsDefensiveShotsAllowed: ColDef[] = [
-    { field: 'def', minWidth: 100, maxWidth: 180, resizable: false },
-    { field: 'value', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(3) },
+    { field: 'def', minWidth: 100, maxWidth: 180 },
+    { field: 'value', valueFormatter: params => params.value.toFixed(3) },
     {
-      field: 'pct', maxWidth: 100, resizable: false,
-      valueFormatter: params => (params.value * 100).toFixed(2)
+      field: 'pct',
+      valueFormatter: this.percent
     }
   ]
 
@@ -110,9 +120,9 @@ export class AppComponent {
   ]
 
   resultColumnDefsTotals: ColDef[] = [
-    { field: 'tot', headerName: 'Total Points', minWidth: 100, maxWidth: 180, resizable: false },
-    { field: 'value', headerName: 'OFF', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'pct', headerName: 'DEF', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
+    { field: 'tot', headerName: 'Total Points', minWidth: 100, maxWidth: 180 },
+    { field: 'value', headerName: 'OFF', valueFormatter: this.percent },
+    { field: 'pct', headerName: 'DEF', valueFormatter: this.percent },
   ]
 
   resultRowDataTotals = [
@@ -120,48 +130,40 @@ export class AppComponent {
     { tot: 'Team 2', value: 26.62, pct: 70.29 }
   ]
 
-
-  // resultOverUnderTemplate: ColDef[] = [
-  //   { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
-  //   { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
-  //   { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-  //   { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-  //   { field: 'lastCol', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(1)}
-  // ]
   resultColumnDefsOffensiveOverTotal: ColDef[] = [
-    { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-    { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-    { field: 'lastCol', headerName: 'TOTAL', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+    { field: 'offOver', valueFormatter: this.percent },
+    { field: 'offUnder',valueFormatter: this.percent },
+    { field: 'defOver', valueFormatter: this.percent},
+    { field: 'defUnder', valueFormatter: this.percent},
+    { field: 'lastCol', headerName: 'TOTAL', valueFormatter: params => params.value.toFixed(1)}
   ]
   resultColumnDefsOffensiveOverHome: ColDef[] = [
-    { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-    { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-    { field: 'lastCol', headerName: 'HOME', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+    { field: 'offOver', valueFormatter: this.percent },
+    { field: 'offUnder',valueFormatter: this.percent },
+    { field: 'defOver', valueFormatter: this.percent},
+    { field: 'defUnder', valueFormatter: this.percent},
+    { field: 'lastCol', headerName: 'HOME', valueFormatter: params => params.value.toFixed(1)}
   ]
   resultColumnDefsOffensiveOverAway: ColDef[] = [
-    { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-    { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-    { field: 'lastCol', headerName: 'AWAY', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+    { field: 'offOver', valueFormatter: this.percent },
+    { field: 'offUnder',valueFormatter: this.percent },
+    { field: 'defOver', valueFormatter: this.percent},
+    { field: 'defUnder', valueFormatter: this.percent},
+    { field: 'lastCol', headerName: 'AWAY', valueFormatter: params => params.value.toFixed(1)}
   ]
   resultColumnDefsOffensiveOverSpreadAway: ColDef[] = [
-    { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-    { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-    { field: 'lastCol', headerName: 'SPR.AWAY', maxWidth: 100, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+    { field: 'offOver', valueFormatter: this.percent },
+    { field: 'offUnder',valueFormatter: this.percent },
+    { field: 'defOver', valueFormatter: this.percent},
+    { field: 'defUnder', valueFormatter: this.percent},
+    { field: 'lastCol', headerName: 'SPR.AWAY', valueFormatter: params => params.value.toFixed(1)}
   ]
   resultColumnDefsOffensiveOverSpreadHome : ColDef[] = [
-    { field: 'offOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'offUnder', maxWidth: 100, resizable: false,valueFormatter: params => (params.value * 100).toFixed(2) },
-    { field: 'defOver', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-    { field: 'defUnder', maxWidth: 100, resizable: false, valueFormatter: params => (params.value * 100).toFixed(2)},
-    { field: 'lastCol', headerName: 'SPR. HOME', maxWidth: 120, resizable: false, valueFormatter: params => params.value.toFixed(1)}
+    { field: 'offOver', valueFormatter: this.percent },
+    { field: 'offUnder',valueFormatter: this.percent },
+    { field: 'defOver', valueFormatter: this.percent},
+    { field: 'defUnder', valueFormatter: this.percent},
+    { field: 'lastCol', headerName: 'SPR. HOME', maxWidth: 120, valueFormatter: params => params.value.toFixed(1)}
   ]
 
   resultRowDataOverUnderTemplate = [
@@ -205,6 +207,10 @@ export class AppComponent {
     this.prepareDataTables()
     this.calculateBtnPressed = false
     this.dataTablesReady = true
+  }
+
+  private percent(params: ValueFormatterParams<any, any>): string {
+    return (params.value * 100).toFixed(2);
   }
 
   prepareDataTables() {
@@ -445,51 +451,41 @@ export class AppComponent {
   }
 
   onGridReadyOffensive(params: { api: GridApi<any>; }) {
-    console.log('onGridReadyOffensive')
     this.gridApiOffensive = params.api;
   }
   onGridReadyDefensive(params: { api: GridApi<any>; }) {
-    console.log('onGridReadyDefensive')
     this.gridApiDefensive = params.api;
   }
 
   onGridReadyResultOffensiveShotsMade(params: { api: GridApi<any>; }) {
-    console.log('onGridReadyResultOffensiveShotsMade')
     params.api!.setGridOption("rowData", this.resultRowDataOffensiveShotsMade)
   }
 
   onGridReadyResultDefensiveShotsAllowed(params: { api: GridApi<any>; }) {
-    console.log('onGridReadyResultDefensiveShotsAllowed')
     params.api!.setGridOption("rowData", this.resultRowDataDefensiveShotsAllowed)
   }
 
   onGridReadyResultTotalPoints(params: { api: GridApi<any>; }) {
-    console.log('onGridReadyResultTotalPoints')
     params.api!.setGridOption("rowData", this.resultRowDataTotals)
   }
 
   onGridReadyResultOverUnderSpreadHome(params: { api: GridApi<any>; }) {
-    console.log('onGridReadyResultOverSpreadHome')
     params.api!.setGridOption("rowData", this.resultRowDataOverUnderSpreadHome)
   }
 
   onGridReadyResultOverUnderSpreadAway(params: { api: GridApi<any>; }) {
-    console.log('onGridReadyResultOverSpreadAway')
     params.api!.setGridOption("rowData", this.resultRowDataOverUnderSpreadAway)
   }
 
   onGridReadyResultOverUnderTotals(params: { api: GridApi<any>; }) {
-    console.log('onGridReadyResultOverUnderTotals')
     params.api!.setGridOption("rowData", this.resultRowDataOverUnderTotal)
   }
 
   onGridReadyResultOverUnderHome(params: { api: GridApi<any>; }) {
-    console.log('onGridReadyResultOverUnderHome')
     params.api!.setGridOption("rowData", this.resultRowDataOverUnderHome)
   }
 
   onGridReadyResultOverUnderAway(params: { api: GridApi<any>; }) {
-    console.log('onGridReadyResultOverUnderAway')
     params.api!.setGridOption("rowData", this.resultRowDataOverUnderAway)
   }
 }
