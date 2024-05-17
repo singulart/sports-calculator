@@ -187,16 +187,16 @@ export class AppComponent {
   calculateBtnPressed = false
   dataTablesReady = false
 
-  offensiveTable: number[][] = []
-  offensiveHome: number[][] = []
-  offensiveAway: number[][] = []
-  offensiveTotal: number[][] = []
+  offensiveTable:  number[][] = []
+  offensiveHome:   number[][] = []
+  offensiveAway:   number[][] = []
+  offensiveTotal:  number[][] = []
   offensiveSpread: number[][] = []
 
-  defensiveTable: number[][] = []
-  defensiveHome: number[][] = []
-  defensiveAway: number[][] = []
-  defensiveTotal: number[][] = []
+  defensiveTable:  number[][] = []
+  defensiveHome:   number[][] = []
+  defensiveAway:   number[][] = []
+  defensiveTotal:  number[][] = []
   defensiveSpread: number[][] = []
   
 
@@ -214,16 +214,16 @@ export class AppComponent {
 
     for (let i = from; i <= to; i++) {
 
-      this.offensiveTable[i - from] = []
-      this.offensiveHome[i - from] = []
-      this.offensiveAway[i - from] = []
-      this.offensiveTotal[i - from] = []
+      this.offensiveTable [i - from] = []
+      this.offensiveHome  [i - from] = []
+      this.offensiveAway  [i - from] = []
+      this.offensiveTotal [i - from] = []
       this.offensiveSpread[i - from] = []
 
-      this.defensiveTable[i - from] = []
-      this.defensiveHome[i - from] = []
-      this.defensiveAway[i - from] = []
-      this.defensiveTotal[i - from] = []
+      this.defensiveTable [i - from] = []
+      this.defensiveHome  [i - from] = []
+      this.defensiveAway  [i - from] = []
+      this.defensiveTotal [i - from] = []
       this.defensiveSpread[i - from] = []
 
       for (let j = from; j <= to; j++) {
@@ -394,17 +394,6 @@ export class AppComponent {
     return sum
   }
 
-  getCellValue = (api: GridApi, rowIndex: number, colId: string) => {
-    const rowNode = api.getDisplayedRowAtIndex(rowIndex);
-    if (rowNode) {
-      const column = api.getColumn(colId);
-      if (column) {
-        return api.getCellValue({ rowNode: rowNode, colKey: colId, useFormatter: false });
-      }
-    }
-    return null;
-  }
-
   psm = (fgm: number, threepm: number) => {
     return this.averagePoints(fgm, threepm) / fgm
   }
@@ -417,28 +406,6 @@ export class AppComponent {
     return fga > 0 ? (fgm / fga) : 0;
   }
 
-  // factorial = (n: number): number => {
-  //   let result = 1;
-  //   for (let i = 2; i <= n; i++) {
-  //     result *= i;
-  //   }
-  //   return result;
-  // }
-
-  // binomialCoefficient = (n: number, k: number): number => {
-  //   if (k > n) {
-  //     return 0;
-  //   }
-  //   if (k === 0 || k === n) {
-  //     return 1;
-  //   }
-  //   k = Math.min(k, n - k); // Take advantage of symmetry
-  //   let coeff = 1;
-  //   for (let i = 0; i < k; i++) {
-  //     coeff *= (n - i) / (i + 1);
-  //   }
-  //   return coeff;
-  // }
 
   /**
    * Calculates the probability of achieving exactly `k` successes in `n` trials, given the probability of success `p` on a single trial.
@@ -451,7 +418,7 @@ export class AppComponent {
   binomialProbability = (n: number, k: number, p: number): number => {
     n = Math.floor(n)
     k = Math.floor(k)
-    
+
     if (k < 0 || k > n) {
       return 0;
     }
@@ -464,6 +431,17 @@ export class AppComponent {
     }
 
     return pmf[k];
+  }
+
+  getCellValue = (api: GridApi, rowIndex: number, colId: string) => {
+    const rowNode = api.getDisplayedRowAtIndex(rowIndex);
+    if (rowNode) {
+      const column = api.getColumn(colId);
+      if (column) {
+        return api.getCellValue({ rowNode: rowNode, colKey: colId, useFormatter: false });
+      }
+    }
+    return null;
   }
 
   onGridReadyOffensive(params: { api: GridApi<any>; }) {
