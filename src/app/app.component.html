@@ -38,8 +38,8 @@
         style="width: 100%; height: 80px;"
         class="ag-theme-quartz"
         [headerHeight]="0"
-        [rowData]="resultRowDataOffensiveShotsMade"
         [columnDefs]="resultColumnDefsOffensiveShotsMade"
+        (gridReady)="onGridReadyResultOffensiveShotsMade($event)"
         >
       </ag-grid-angular>
     </div>
@@ -55,8 +55,8 @@
           style="width: 100%; height: 80px;"
           class="ag-theme-quartz"
           [headerHeight]="0"
-          [rowData]="resultRowDataDefensiveShotsAllowed"
           [columnDefs]="resultColumnDefsDefensiveShotsAllowed"
+          (gridReady)="onGridReadyResultDefensiveShotsAllowed($event)"
           >
         </ag-grid-angular>
       </div>
@@ -71,9 +71,9 @@
         <ag-grid-angular
           style="width: 100%; height: 80px;"
           class="ag-theme-quartz"
-          [headerHeight]="0"
           [rowData]="resultRowDataTotals"
           [columnDefs]="resultColumnDefsTotals"
+          (gridReady)="onGridReadyResultTotalPoints($event)"
           >
         </ag-grid-angular>
       </div>
