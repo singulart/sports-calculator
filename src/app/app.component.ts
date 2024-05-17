@@ -364,7 +364,6 @@ export class AppComponent {
         defUnder: 1 - dOver,
         lastCol: t
       }
-
       ind++    
     }
 
@@ -450,6 +449,9 @@ export class AppComponent {
    * @returns 
    */
   binomialProbability = (n: number, k: number, p: number): number => {
+    n = Math.floor(n)
+    k = Math.floor(k)
+    
     if (k < 0 || k > n) {
       return 0;
     }
