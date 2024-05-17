@@ -167,18 +167,18 @@ export class AppComponent {
         for (let j = from; j <= to; j++) {
 
           this.offensiveTable[i-from][j-from] = 
-            this.binomialProbability(this.getCellValue(this.gridApiOffensive, 1, 'fga'), i, this.getCellValue(this.gridApiOffensive, 1, 'fgPct')) * 
-            this.binomialProbability(this.getCellValue(this.gridApiOffensive, 0, 'fga'), j, this.getCellValue(this.gridApiOffensive, 0, 'fgPct'))
-          this.offensiveHome[i-from][j-from] = this.getCellValue(this.gridApiOffensive, 1, 'psm') * i + this.getCellValue(this.gridApiOffensive, 1, 'ftm')
-          this.offensiveAway[i-from][j-from] = this.getCellValue(this.gridApiOffensive, 0, 'psm') * j + this.getCellValue(this.gridApiOffensive, 0, 'ftm')
+            this.binomialProbability(this.getCellValue(this.gridApiOffensive, 0, 'fga'), i, this.getCellValue(this.gridApiOffensive, 0, 'fgPct')) * 
+            this.binomialProbability(this.getCellValue(this.gridApiOffensive, 1, 'fga'), j, this.getCellValue(this.gridApiOffensive, 1, 'fgPct'))
+          this.offensiveHome[i-from][j-from] = this.getCellValue(this.gridApiOffensive, 0, 'psm') * i + this.getCellValue(this.gridApiOffensive, 0, 'ftm')
+          this.offensiveAway[i-from][j-from] = this.getCellValue(this.gridApiOffensive, 1, 'psm') * j + this.getCellValue(this.gridApiOffensive, 1, 'ftm')
           this.offensiveTotal[i-from][j-from]  = this.offensiveHome[i-from][j-from] + this.offensiveAway[i-from][j-from]
           this.offensiveSpread[i-from][j-from] = this.offensiveHome[i-from][j-from] - this.offensiveAway[i-from][j-from]
 
           this.defensiveTable[i-from][j-from] = 
             this.binomialProbability(this.getCellValue(this.gridApiDefensive, 1, 'fga'), i, this.getCellValue(this.gridApiDefensive, 1, 'fgPct')) * 
             this.binomialProbability(this.getCellValue(this.gridApiDefensive, 0, 'fga'), j, this.getCellValue(this.gridApiDefensive, 0, 'fgPct'))
-          this.defensiveHome[i-from][j-from] = this.getCellValue(this.gridApiDefensive, 1, 'psm') * j + this.getCellValue(this.gridApiOffensive, 1, 'ftm')
-          this.defensiveAway[i-from][j-from] = this.getCellValue(this.gridApiDefensive, 0, 'psm') * i + this.getCellValue(this.gridApiDefensive, 0, 'ftm')
+          this.defensiveHome[i-from][j-from] = this.getCellValue(this.gridApiDefensive, 1, 'psm') * i + this.getCellValue(this.gridApiOffensive, 0, 'ftm')
+          this.defensiveAway[i-from][j-from] = this.getCellValue(this.gridApiDefensive, 0, 'psm') * j + this.getCellValue(this.gridApiOffensive, 1, 'ftm')
           this.defensiveTotal[i-from][j-from]  = this.defensiveHome[i-from][j-from] + this.defensiveAway[i-from][j-from]
           this.defensiveSpread[i-from][j-from] = this.defensiveHome[i-from][j-from] - this.defensiveAway[i-from][j-from]
         }  
