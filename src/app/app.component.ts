@@ -319,7 +319,7 @@ export class AppComponent {
     ind = 0
     for (let t = max; t >= min; t-=1) {
       let oOver = this.sumIfGreaterThan(this.offensiveHome, t, this.offensiveTable, from, to)
-      let dOver = this.sumIfGreaterThan(this.defensiveHome , t, this.defensiveTable, from, to)
+      let dOver = this.sumIfGreaterThan(this.defensiveAway , t, this.defensiveTable, from, to)
       this.resultRowDataOverUnderHome[ind] = {
         offOver: oOver,
         offUnder: 1 - oOver,
@@ -335,7 +335,7 @@ export class AppComponent {
     ind = 0
     for (let t = max; t >= min; t-=1) {
       let oOver = this.sumIfGreaterThan(this.offensiveAway, t, this.offensiveTable, from, to)
-      let dOver = this.sumIfGreaterThan(this.offensiveAway, t, this.defensiveTable, from, to)
+      let dOver = this.sumIfGreaterThan(this.defensiveHome, t, this.defensiveTable, from, to)
       this.resultRowDataOverUnderAway[ind] = {
         offOver: oOver,
         offUnder: 1 - oOver,
