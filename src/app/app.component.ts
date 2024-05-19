@@ -78,13 +78,13 @@ export class AppComponent {
   ]
 
   rowDataOffensive = [
-    { off: 'Team 1', fgm: 47, fga: 92.7, threepm: 13.2, threepa: 35.3, ftm: 16.1 },
-    { off: 'Team 2', fgm: 41.3, fga: 88.7, threepm: 13.2, threepa: 35.8, ftm: 17.0 }
+    { off: 'HOME', fgm: 47, fga: 92.7, threepm: 13.2, threepa: 35.3, ftm: 16.1 },
+    { off: 'AWAY', fgm: 41.3, fga: 88.7, threepm: 13.2, threepa: 35.8, ftm: 17.0 }
   ];
 
   rowDataDefensive = [
-    { def: 'Team 1', fgm: 44.5, fga: 89.8, threepm: 10.7, threepa: 29.3 },
-    { def: 'Team 2', fgm: 40.3, fga: 85.7, threepm: 12.5, threepa: 34.3 }
+    { def: 'HOME', fgm: 44.5, fga: 89.8, threepm: 10.7, threepa: 29.3 },
+    { def: 'AWAY', fgm: 40.3, fga: 85.7, threepm: 12.5, threepa: 34.3 }
   ]
 
   //////////////////////// RESULT TABLES ///////////////////////////////////
@@ -100,8 +100,8 @@ export class AppComponent {
 
   resultRowDataOffensiveShotsMade = [
     { off: 'Offensive Shots Made', value: 0.042, pct: 99.96 },
-    { off: 'Team 1', value: 0.780, pct: 81.37 },
-    { off: 'Team 2', value: 0.178, pct: 18.63 }
+    { off: 'HOME', value: 0.780, pct: 81.37 },
+    { off: 'AWAY', value: 0.178, pct: 18.63 }
   ]
 
   resultColumnDefsDefensiveShotsAllowed: ColDef[] = [
@@ -115,8 +115,8 @@ export class AppComponent {
 
   resultRowDataDefensiveShotsAllowed = [
     { def: 'Defensive Shots Allowed', value: 0.042, pct: 99.96 },
-    { def: 'Team 1', value: 0.780, pct: 81.37 },
-    { def: 'Team 2', value: 0.178, pct: 18.63 }
+    { def: 'HOME', value: 0.780, pct: 81.37 },
+    { def: 'AWAY', value: 0.178, pct: 18.63 }
   ]
 
   resultColumnDefsTotals: ColDef[] = [
@@ -126,8 +126,8 @@ export class AppComponent {
   ]
 
   resultRowDataTotals = [
-    { tot: 'Team 1', value: 73.34, pct: 29.67 },
-    { tot: 'Team 2', value: 26.62, pct: 70.29 }
+    { tot: 'HOME', value: 73.34, pct: 29.67 },
+    { tot: 'AWAY', value: 26.62, pct: 70.29 }
   ]
 
   resultColumnDefsOffensiveOverTotal: ColDef[] = [
@@ -235,10 +235,10 @@ export class AppComponent {
       for (let j = from; j <= to; j++) {
 
         this.offensiveTable[i - from][j - from] =
-          this.binomialProbability(this.getCellValue(this.gridApiOffensive, 0, 'fga'), i, this.getCellValue(this.gridApiOffensive, 0, 'fgPct')) *
-          this.binomialProbability(this.getCellValue(this.gridApiOffensive, 1, 'fga'), j, this.getCellValue(this.gridApiOffensive, 1, 'fgPct'))
-        this.offensiveHome[i - from][j - from] = this.getCellValue(this.gridApiOffensive, 0, 'psm') * i + this.getCellValue(this.gridApiOffensive, 0, 'ftm')
-        this.offensiveAway[i - from][j - from] = this.getCellValue(this.gridApiOffensive, 1, 'psm') * j + this.getCellValue(this.gridApiOffensive, 1, 'ftm')
+          this.binomialProbability(this.getCellValue(this.gridApiOffensive, 0, 'fga'), j, this.getCellValue(this.gridApiOffensive, 0, 'fgPct')) *
+          this.binomialProbability(this.getCellValue(this.gridApiOffensive, 1, 'fga'), i, this.getCellValue(this.gridApiOffensive, 1, 'fgPct'))
+        this.offensiveHome[i - from][j - from] = this.getCellValue(this.gridApiOffensive, 0, 'psm') * j + this.getCellValue(this.gridApiOffensive, 0, 'ftm')
+        this.offensiveAway[i - from][j - from] = this.getCellValue(this.gridApiOffensive, 1, 'psm') * i + this.getCellValue(this.gridApiOffensive, 1, 'ftm')
         this.offensiveTotal[i - from][j - from] = this.offensiveHome[i - from][j - from] + this.offensiveAway[i - from][j - from]
         this.offensiveSpread[i - from][j - from] = this.offensiveHome[i - from][j - from] - this.offensiveAway[i - from][j - from]
 
@@ -277,22 +277,22 @@ export class AppComponent {
     this.resultRowDataOffensiveShotsMade =
       [
         { off: 'Offensive Shots Made', value: sumOffDiagonal, pct: sumOff },
-        { off: 'Team 1', value: sumOff - sumOffBottom - sumOffDiagonal, pct: (sumOff - sumOffBottom - sumOffDiagonal) / (sumOff - sumOffDiagonal) },
-        { off: 'Team 2', value: sumOffBottom, pct: sumOffBottom / (sumOff - sumOffDiagonal) }
+        { off: 'HOME', value: sumOff - sumOffBottom - sumOffDiagonal, pct: (sumOff - sumOffBottom - sumOffDiagonal) / (sumOff - sumOffDiagonal) },
+        { off: 'AWAY', value: sumOffBottom, pct: sumOffBottom / (sumOff - sumOffDiagonal) }
       ]
 
     this.resultRowDataDefensiveShotsAllowed =
       [
         { def: 'Defensive Shots Allowed', value: sumDefDiagonal, pct: sumDef },
-        { def: 'Team 1', value: sumDefBottom, pct: sumDefBottom / (sumDef - sumDefDiagonal) },
-        { def: 'Team 2', value: sumDef - sumDefBottom - sumDefDiagonal, pct: (sumDef - sumDefBottom - sumDefDiagonal) / (sumDef - sumDefDiagonal) }
+        { def: 'HOME', value: sumDefBottom, pct: sumDefBottom / (sumDef - sumDefDiagonal) },
+        { def: 'AWAY', value: sumDef - sumDefBottom - sumDefDiagonal, pct: (sumDef - sumDefBottom - sumDefDiagonal) / (sumDef - sumDefDiagonal) }
       ]
 
     let a4 = this.sumIfGreaterThan(this.offensiveSpread, 0, this.offensiveTable, from, to)
     let c4 = this.sumIfGreaterThan(this.defensiveSpread, 0, this.defensiveTable, from, to)
     this.resultRowDataTotals = [
-      { tot: 'Team 1', value: a4, pct: c4 },
-      { tot: 'Team 2', value: sumOff - a4, pct: sumOff - c4 }
+      { tot: 'HOME', value: a4, pct: c4 },
+      { tot: 'AWAY', value: sumOff - a4, pct: sumOff - c4 }
     ];
 
 
